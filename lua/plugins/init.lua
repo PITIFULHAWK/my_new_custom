@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre", -- uncomment for format on save
     opts = require "configs.conform",
   },
 
@@ -59,7 +59,7 @@ return {
     end,
   },
 
--- Treesitter for syntax highlighting
+  -- Treesitter for syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     opts = function()
@@ -83,6 +83,16 @@ return {
         },
         highlight = { enable = true },
         indent = { enable = true },
+      }
+    end,
+  },
+  -- scroll behavior
+  {
+    "karb94/neoscroll.nvim",
+    config = function()
+      require("neoscroll").setup {
+        -- Customize scroll behavior
+        easing_function = "quadratic", -- smooth scrolling effect
       }
     end,
   },
