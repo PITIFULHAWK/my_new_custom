@@ -86,6 +86,36 @@ return {
       }
     end,
   },
+  -- Add your nvim-tree configuration here
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = function()
+      return {
+        git = {
+          enable = true, -- Enable git integration
+          ignore = false, -- Show files ignored by .gitignore
+        },
+        renderer = {
+          highlight_git = true, -- Highlight git-modified files
+          icons = {
+            show = {
+              git = true, -- Show git icons
+              folder = true, -- Show folder icons
+              file = true, -- Show file icons
+            },
+          },
+        },
+        view = {
+          width = 30, -- Width of the tree panel
+          side = "left", -- Position of the tree panel (can be "left" or "right")
+        },
+        -- sort_by = "extension", -- Sort files by extension
+        filters = {
+          dotfiles = false, -- Show hidden files
+        },
+      }
+    end,
+  },
   -- scroll behavior
   {
     "karb94/neoscroll.nvim",
