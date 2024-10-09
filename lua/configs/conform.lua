@@ -14,7 +14,7 @@ local options = {
     bash = { "shfmt" }, -- Bash
     yaml = { "yamlfmt" }, -- YAML
     markdown = { "prettierd" }, -- Markdown
-    dockerfile = { "prettierd" }, -- Dockerfile
+    dockerfile = { "null-ls" }, -- Dockerfile
     terraform = { "prettierd" }, -- Terraform
   },
 
