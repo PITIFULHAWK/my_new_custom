@@ -11,7 +11,7 @@ local opts = {
     null_ls.builtins.formatting.yamlfmt,
     null_ls.builtins.formatting.terraform_fmt,
     null_ls.builtins.formatting.prettierd.with {
-      filetypes = { "prisma" }, -- Add Prisma support
+      filetypes = { "prisma", "dockerfile" }, -- Add Prisma support
     },
   },
   on_attach = function(client, bufnr)
