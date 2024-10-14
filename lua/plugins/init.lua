@@ -69,6 +69,7 @@ return {
           "javascript",
           "typescript",
           "tsx",
+          "html",
           "prisma",
           "python",
           "java",
@@ -125,5 +126,15 @@ return {
         easing_function = "quadratic", -- smooth scrolling effect
       }
     end,
+  },
+
+  -- autocomplete tags
+  {
+    "windwp/nvim-ts-autotag",
+    config = function()
+      require("nvim-ts-autotag").setup {}
+    end,
+    -- Ensure it's loaded with treesitter for file types like JSX, TSX
+    event = "InsertEnter",
   },
 }
