@@ -51,13 +51,13 @@ return {
   },
 
   -- none-ls for null-ls configuration
-  {
-    "nvimtools/none-ls.nvim",
-    event = "VeryLazy",
-    opts = function()
-      return require "configs.null-ls"
-    end,
-  },
+  -- {
+  --   "nvimtools/none-ls.nvim",
+  --   event = "VeryLazy",
+  --   opts = function()
+  --     return require "configs.null-ls"
+  --   end,
+  -- },
 
   -- Treesitter for syntax highlighting
   {
@@ -137,4 +137,34 @@ return {
     -- Ensure it's loaded with treesitter for file types like JSX, TSX
     event = "InsertEnter",
   },
+
+  -- for error message
+  {
+    "folke/noice.nvim",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function()
+      require("noice").setup {
+        presets = {
+          "default",
+          "lsp_doc_border",
+        },
+        routes = {
+          {
+            filter = { event = "msg_show" },
+            view = "floating", -- Show messages in a floating window
+          },
+          {
+            filter = { event = "notify", level = vim.log.levels.ERROR },
+            view = "floating", -- Show error notifications in a floating window
+          },
+        },
+      }
+    end,
+  },
+
+  -- Make sure you have these dependencies too (this is for the above error plugi
+  "kyazdani42/nvim-web-devicons", -- Required for icons
 }
