@@ -14,21 +14,31 @@ return {
     end,
   },
 
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
-  --
+  -- rust installation
+  {
+    "mrcjkb/rustaceanvim",
+    version = "^4", -- Use the latest version
+    ft = { "rust" }, -- Load only for Rust files
+    opts = {
+      server = {
+        on_attach = function(client, bufnr)
+          -- Customize LSP keybindings if needed
+          local bufopts = { noremap = true, silent = true, buffer = bufnr }
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+        end,
+      },
+    },
+  },
+
   -- Mason for additional tools
   {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
+        "lua-language-server",
+        "stylua",
+        "html-lsp",
         "black",
         "prettierd",
         "clang-format",
@@ -82,6 +92,8 @@ return {
           "dockerfile",
           "hcl",
           "css",
+          "vim",
+          "vimdoc",
         },
         highlight = { enable = true },
         indent = { enable = true },
@@ -390,6 +402,22 @@ return {
         enabled = false, -- Disable scope highlighting for performance
       },
     },
+  },
+
+  -- lightspeed.nvim
+  {
+    "ggandor/lightspeed.nvim",
+    event = "VimEnter",
+  },
+
+  -- nvim-surround
+  {
+    "kylechui/nvim-surround",
+    version = "*", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup {}
+    end,
   },
 
   -- Required dependencies

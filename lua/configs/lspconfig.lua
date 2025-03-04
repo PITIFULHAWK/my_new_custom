@@ -1,4 +1,6 @@
--- load defaults i.e lua_lsp
+-- Load defaults (i.e., lua_lsp)
+-- ./lua/configs/lspconfigs.lua
+
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
@@ -18,6 +20,8 @@ local servers = {
   "terraformls",
   "jsonls",
   "prismals",
+  "lua_ls", -- Added Lua LSP
+  "rust_analyzer", -- Added Rust LSP
 }
 
 local nvlsp = require "nvchad.configs.lspconfig"
@@ -44,14 +48,6 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 end
-
--- Optional: Configure a single server with specific settings
--- Uncomment and modify as needed
--- lspconfig.ts_ls.setup {
---   on_attach = on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
 
 -- Configure diagnostic display rules (optional)
 vim.diagnostic.config {
