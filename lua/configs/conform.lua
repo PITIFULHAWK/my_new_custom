@@ -8,6 +8,7 @@ local options = {
     json = { "prettierd" },
     prisma = { "null-ls" },
     python = { "black" },
+    rust = { "rustfmt" },
     java = { "google-java-format" },
     c = { "clang-format" },
     cpp = { "clang-format" },

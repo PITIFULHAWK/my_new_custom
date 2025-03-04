@@ -17,18 +17,31 @@ return {
   -- rust installation
   {
     "mrcjkb/rustaceanvim",
-    version = "^4", -- Use the latest version
-    ft = { "rust" }, -- Load only for Rust files
-    opts = {
-      server = {
-        on_attach = function(client, bufnr)
-          -- Customize LSP keybindings if needed
-          local bufopts = { noremap = true, silent = true, buffer = bufnr }
-          vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-          vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-        end,
-      },
-    },
+    version = "^4",
+    ft = { "rust" },
+    config = function()
+      vim.g.rustaceanvim = {
+        server = {
+          on_attach = function(client, bufnr)
+            -- Customize on_attach if needed
+          end,
+          settings = {
+            ["rust-analyzer"] = {
+              checkOnSave = {
+                command = "clippy",
+              },
+              completion = {
+                fullFunctionSignatures = false, -- Disables long function signatures
+                postfix = { enable = false }, -- Disables postfix completions if they feel excessive
+              },
+              diagnostics = {
+                disabled = { "unresolved-proc-macro" }, -- Optional: Suppress macro-related false positives
+              },
+            },
+          },
+        },
+      }
+    end,
   },
 
   -- Mason for additional tools
@@ -192,6 +205,7 @@ return {
   -- },
 
   -- Completion engine (VS Code's IntelliSense)
+  -- Replace your current nvim-cmp config with this:
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
@@ -202,14 +216,53 @@ return {
     config = function()
       local cmp = require "cmp"
 
+      -- Setup custom formatting to fix wide completion items
+      local compare = require "cmp.config.compare"
+      local types = require "cmp.types"
+
       cmp.setup {
+        window = {
+          completion = {
+            border = "rounded",
+            winhighlight = "Normal:CmpPmenu,CursorLine:PmenuSel,Search:None",
+            scrollbar = false,
+            -- Fixed width configuration
+            col_offset = -3,
+            side_padding = 0,
+          },
+          documentation = {
+            border = "rounded",
+            max_width = 50,
+            max_height = 10,
+          },
+        },
+
+        formatting = {
+          fields = { "abbr", "kind", "menu" },
+          format = function(entry, vim_item)
+            -- Set a fixed width for the abbr field (the suggestion text)
+            local abbr = vim_item.abbr
+            if #abbr > 30 then
+              vim_item.abbr = string.sub(abbr, 1, 27) .. "..."
+            end
+
+            -- You can customize the appearance of the menu items here
+            vim_item.menu = ({
+              nvim_lsp = "[LSP]",
+              buffer = "[Buffer]",
+              path = "[Path]",
+            })[entry.source.name]
+
+            return vim_item
+          end,
+        },
+
         mapping = cmp.mapping.preset.insert {
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<CR>"] = cmp.mapping.confirm { select = true },
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<C-d>"] = cmp.mapping.scroll_docs(4),
-          ["<C-u>"] = cmp.mapping.scroll_docs(-4),
-
+          ["<C-d>"] = cmp.mapping.scroll_docs(3),
+          ["<C-u>"] = cmp.mapping.scroll_docs(-3),
           ["<Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_next_item()
@@ -220,7 +273,6 @@ return {
               fallback()
             end
           end, { "i", "s" }),
-
           ["<S-Tab>"] = cmp.mapping(function(fallback)
             if cmp.visible() then
               cmp.select_prev_item()
@@ -229,10 +281,29 @@ return {
             end
           end, { "i", "s" }),
         },
+
         sources = {
           { name = "nvim_lsp" },
           { name = "buffer" },
           { name = "path" },
+        },
+
+        experimental = {
+          ghost_text = false,
+        },
+
+        sorting = {
+          priority_weight = 2,
+          comparators = {
+            compare.exact,
+            compare.score,
+            compare.recently_used,
+            compare.locality,
+            compare.kind,
+            compare.sort_text,
+            compare.length,
+            compare.order,
+          },
         },
       }
     end,
