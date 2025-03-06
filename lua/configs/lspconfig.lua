@@ -1,25 +1,19 @@
--- Load defaults (i.e., lua_lsp)
--- ./lua/configs/lspconfigs.lua
-
+-- ./lua/configs/lspconfig.lua
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
 
--- Updated server list with React Native specific servers
+-- Remove sourcery from servers list
 local servers = {
   -- JavaScript/TypeScript
   "ts_ls", -- TypeScript/JavaScript server
-  "eslint", -- ESLint
-  "tailwindcss", -- For styling
-  "cssls", -- CSS
-  "jsonls", -- JSON
+  "eslint",
+  "tailwindcss",
+  "cssls",
+  "jsonls",
 
-  -- React Native specific
-  "flow", -- Flow type checker
-  "sourcery", -- Advanced code analysis
-
-  -- Keep your existing servers
+  -- Your other servers
   "html",
   "pyright",
   "jdtls",
@@ -33,23 +27,22 @@ local servers = {
   "rust_analyzer",
 }
 
--- Enhanced on_attach function with React Native specific features
 local function on_attach(client, bufnr)
   nvlsp.on_attach(client, bufnr)
 
-  -- Common LSP keybindings
   local bufopts = { noremap = true, silent = true, buffer = bufnr }
   vim.keymap.set("n", "<Leader>d", vim.diagnostic.open_float, bufopts)
-  vim.keymap.set("n", "<Leader>gD", vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set("n", "<Leader>gd", vim.lsp.buf.definition, bufopts)
+  vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 
-  -- React Native specific keybindings
-  vim.keymap.set("n", "<Leader>rn", ":ReactNativeRun<CR>", bufopts)
-  vim.keymap.set("n", "<Leader>rl", ":ReactNativeLogs<CR>", bufopts)
-  vim.keymap.set("n", "<Leader>rd", ":ReactNativeDevMenu<CR>", bufopts)
+  -- Bun + React Native specific keybindings
+  vim.keymap.set("n", "<Leader>rn", ":!bun run android<CR>", bufopts)
+  vim.keymap.set("n", "<Leader>ri", ":!bun run ios<CR>", bufopts)
+  vim.keymap.set("n", "<Leader>rs", ":!bun start<CR>", bufopts)
+  vim.keymap.set("n", "<Leader>rt", ":!bun test<CR>", bufopts)
 
-  -- Auto-format on save for JavaScript/TypeScript files
+  -- Auto-format on save
   if client.name == "ts_ls" then
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
@@ -60,7 +53,7 @@ local function on_attach(client, bufnr)
   end
 end
 
--- TypeScript/JavaScript specific settings
+-- TypeScript/JavaScript settings
 local function get_typescript_settings()
   return {
     typescript = {
@@ -72,6 +65,9 @@ local function get_typescript_settings()
         includeInlayPropertyDeclarationTypeHints = true,
         includeInlayFunctionLikeReturnTypeHints = true,
       },
+      suggest = {
+        completeFunctionCalls = true,
+      },
     },
     javascript = {
       inlayHints = {
@@ -82,11 +78,14 @@ local function get_typescript_settings()
         includeInlayPropertyDeclarationTypeHints = true,
         includeInlayFunctionLikeReturnTypeHints = true,
       },
+      suggest = {
+        completeFunctionCalls = true,
+      },
     },
   }
 end
 
--- Configure servers with specific settings
+-- Configure servers
 for _, lsp in ipairs(servers) do
   local config = {
     on_attach = on_attach,
@@ -94,10 +93,9 @@ for _, lsp in ipairs(servers) do
     capabilities = nvlsp.capabilities,
   }
 
-  -- Add specific configurations for different servers
   if lsp == "ts_ls" then
     config.settings = get_typescript_settings()
-    config.root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json")
+    config.root_dir = lspconfig.util.root_pattern("bun.lockb", "package.json", "tsconfig.json", "jsconfig.json")
     config.single_file_support = true
     config.filetypes = {
       "javascript",
@@ -127,19 +125,31 @@ for _, lsp in ipairs(servers) do
 end
 
 -- Configure diagnostic display
+-- Configure diagnostic display
 vim.diagnostic.config {
   virtual_text = {
     prefix = "●",
     spacing = 4,
-    source = "always",
+    source = false, -- Don't show source in virtual text
+    format = function(diagnostic)
+      -- Limit the diagnostic message length
+      local message = diagnostic.message
+      if #message > 50 then
+        return string.sub(message, 1, 45) .. "..."
+      end
+      return message
+    end,
   },
   float = {
     focusable = true,
     style = "minimal",
     border = "rounded",
-    source = "always",
+    source = true, -- Show source in float window instead
     header = "",
     prefix = "",
+    -- Format floating window width
+    width = 60, -- Set maximum width
+    max_width = 60, -- Ensure it doesn't exceed this width
   },
   signs = true,
   underline = true,
@@ -147,7 +157,7 @@ vim.diagnostic.config {
   severity_sort = true,
 }
 
--- Set up diagnostic signs
+-- Set up diagnostic signs with the same icons
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
