@@ -6,7 +6,6 @@ return {
     opts = require "configs.conform",
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -44,6 +43,13 @@ return {
     end,
   },
 
+  -- Enhanced JavaScript/TypeScript support
+  {
+    "styled-components/vim-styled-components",
+    branch = "main",
+    ft = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
+  },
+
   -- Mason for additional tools
   {
     "williamboman/mason.nvim",
@@ -53,6 +59,7 @@ return {
         "stylua",
         "html-lsp",
         "black",
+        "prettier",
         "prettierd",
         "clang-format",
         "eslint_d",
@@ -60,6 +67,8 @@ return {
         "prettierd",
         "tailwindcss-language-server",
         "typescript-language-server",
+        "react-native-tools",
+        "flow-language-server",
         "prisma-language-server",
         "pyright",
         "jdtls",
