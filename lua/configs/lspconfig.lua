@@ -43,12 +43,14 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "<Leader>rt", ":!bun test<CR>", bufopts)
 
   -- Auto-format on save
-  if client.name == "ts_ls" then
+  -- Instead of checking for ts_ls specifically:
+  if client.server_capabilities.documentFormattingProvider then
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
       callback = function()
         vim.lsp.buf.format { async = false }
       end,
+      desc = "Auto format on save",
     })
   end
 end

@@ -5,6 +5,10 @@ local options = {
     html = { "prettierd" },
     javascript = { "prettierd" },
     typescript = { "prettierd" },
+    -- Add these lines for TSX/React files:
+    typescriptreact = { "prettierd" },
+    tsx = { "prettierd" },
+    jsx = { "prettierd" },
     json = { "prettierd" },
     prisma = { "null-ls" },
     python = { "black" },
