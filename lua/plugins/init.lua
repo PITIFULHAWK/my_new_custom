@@ -31,7 +31,7 @@ return {
               },
               completion = {
                 fullFunctionSignatures = false, -- Disables long function signatures
-                postfix = { enable = false }, -- Disables postfix completions if they feel excessive
+                postfix = { enable = false },   -- Disables postfix completions if they feel excessive
               },
               diagnostics = {
                 disabled = { "unresolved-proc-macro" }, -- Optional: Suppress macro-related false positives
@@ -184,7 +184,7 @@ return {
       }
       -- VS Code-like keybindings
       vim.api.nvim_set_keymap("n", "<C-p>", ":Telescope find_files<CR>", { noremap = true, silent = true }) -- Ctrl+p to find files
-      vim.api.nvim_set_keymap("n", "<C-f>", ":Telescope live_grep<CR>", { noremap = true, silent = true }) -- Ctrl+f to search in files
+      vim.api.nvim_set_keymap("n", "<C-f>", ":Telescope live_grep<CR>", { noremap = true, silent = true })  -- Ctrl+f to search in files
     end,
   },
 
@@ -202,6 +202,7 @@ return {
       }
     end,
   },
+
   -- scroll behavior
   -- {
   --   "karb94/neoscroll.nvim",
@@ -218,8 +219,8 @@ return {
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      "hrsh7th/cmp-buffer", -- Buffer completions
-      "hrsh7th/cmp-path", -- Path completions
+      "hrsh7th/cmp-buffer",   -- Buffer completions
+      "hrsh7th/cmp-path",     -- Path completions
       "hrsh7th/cmp-nvim-lsp", -- LSP completions
     },
     config = function()
@@ -500,7 +501,18 @@ return {
     end,
   },
 
+  -- mini.ai plugins
+  {
+    "echasnovski/mini.nvim",
+    version = false,
+    config = function()
+      require("mini.ai").setup {
+        -- Add any custom configuration here, or leave it as default
+      }
+    end,
+  },
+
   -- Required dependencies
   "nvim-tree/nvim-web-devicons", -- Icons
-  "nvim-lua/plenary.nvim", -- Required by telescope
+  "nvim-lua/plenary.nvim",       -- Required by telescope
 }
