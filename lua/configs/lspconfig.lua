@@ -3,6 +3,13 @@ require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
 local nvlsp = require "nvchad.configs.lspconfig"
+local capabilities = vim.tbl_deep_extend("force", nvlsp.capabilities, {
+  textDocument = {
+    implementation = {
+      dynamicRegistration = true,
+    },
+  },
+})
 
 -- Remove sourcery from servers list
 local servers = {
@@ -35,6 +42,12 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+  
+  -- Add implementation keybinding
+  vim.keymap.set("n", "gI", vim.lsp.buf.implementation, bufopts)
+  
+  -- Add references keybinding (replacing gr)
+  vim.keymap.set("n", "gR", vim.lsp.buf.references, bufopts)
 
   -- Auto-format on save
   if client:supports_method "textDocument/formatting" then
@@ -85,8 +98,84 @@ for _, lsp in ipairs(servers) do
   local config = {
     on_attach = on_attach,
     on_init = nvlsp.on_init,
-    capabilities = nvlsp.capabilities,
+    capabilities = capabilities,
   }
+
+  -- Add specific configuration for Java
+  if lsp == "jdtls" then
+    config.settings = {
+      java = {
+        signatureHelp = { enabled = true },
+        contentProvider = { preferred = "fernflower" },
+        implementationsCodeLens = { enabled = true },
+        referencesCodeLens = { enabled = true },
+        references = { includeDecompiledSources = true },
+        format = {
+          enabled = true,
+          settings = {
+            url = vim.fn.stdpath("config") .. "/lang-servers/intellij-java-google-style.xml",
+            profile = "GoogleStyle",
+          },
+        },
+        completion = {
+          favoriteStaticMembers = {
+            "org.hamcrest.MatcherAssert.assertThat",
+            "org.hamcrest.Matchers.*",
+            "org.hamcrest.CoreMatchers.*",
+            "org.junit.jupiter.api.Assertions.*",
+            "java.util.Objects.requireNonNull",
+            "java.util.Objects.requireNonNullElse",
+            "org.mockito.Mockito.*",
+          },
+          filteredTypes = {
+            "com.sun.*",
+            "io.micrometer.shaded.*",
+            "java.awt.*",
+            "jdk.*",
+            "sun.*",
+          },
+        },
+        sources = {
+          organizeImports = {
+            starThreshold = 9999,
+            staticStarThreshold = 9999,
+          },
+        },
+        codeGeneration = {
+          toString = {
+            template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
+          },
+          useBlocks = true,
+        },
+        configuration = {
+          updateBuildConfiguration = "interactive",
+          runtimes = {
+            {
+              name = "JavaSE-17",
+              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@17",
+            },
+            {
+              name = "JavaSE-11",
+              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@11",
+            },
+            {
+              name = "JavaSE-1.8",
+              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@8",
+            },
+          },
+        },
+        maven = {
+          downloadSources = true,
+        },
+        implementationsCodeLens = {
+          enabled = true,
+        },
+        referencesCodeLens = {
+          enabled = true,
+        },
+      },
+    }
+  end
 
   if lsp == "ts_ls" then
     config.settings = get_typescript_settings()

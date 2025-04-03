@@ -43,7 +43,8 @@ map("n", "<A-t>", "<cmd>ToggleTerm<CR>", { desc = "Toggle terminal" })
 
 -- Code navigation
 map("n", "gd", ":lua vim.lsp.buf.definition()<CR>", { noremap = true, silent = true }) -- Go to definition
-map("n", "gr", ":lua vim.lsp.buf.references()<CR>", { noremap = true, silent = true }) -- Find references
+map("n", "gI", ":lua vim.lsp.buf.implementation()<CR>", { noremap = true, silent = true }) -- Go to implementation
+map("n", "gR", ":lua vim.lsp.buf.references()<CR>", { noremap = true, silent = true }) -- Find references
 map("n", "K", ":lua vim.lsp.buf.hover()<CR>", { noremap = true, silent = true }) -- Show documentation
 map("n", "<leader>r", ":lua vim.lsp.buf.rename()<CR>", { noremap = true, silent = true }) -- Rename symbol
 
