@@ -37,4 +37,3 @@ vim.schedule(function()
 end)
 
 -- Add after your existing configurations
-require("configs.react-native").setup()
