@@ -26,7 +26,7 @@ map("n", "<leader>\\", ":vsplit<CR>", { noremap = true, silent = true }) -- Vert
 map("n", "<leader>-", ":split<CR>", { noremap = true, silent = true }) -- Horizontal split
 
 -- Close buffer without closing window (VS Code-like)
-map("n", "<leader-x>", ":bd<CR>", { noremap = true, silent = true }) -- Close current buffer
+map("n", "<leader>x", ":bd<CR>", { noremap = true, silent = true }) -- Close current buffer
 
 -- Show file explorer
 map("n", "<C-n>", ":NvimTreeToggle<CR>", { noremap = true, silent = true }) -- Toggle file explorer with Ctrl+n

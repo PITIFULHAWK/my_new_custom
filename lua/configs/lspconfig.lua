@@ -36,15 +36,8 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
 
-  -- Bun + React Native specific keybindings
-  vim.keymap.set("n", "<Leader>rn", ":!bun run android<CR>", bufopts)
-  vim.keymap.set("n", "<Leader>ri", ":!bun run ios<CR>", bufopts)
-  vim.keymap.set("n", "<Leader>rs", ":!bun start<CR>", bufopts)
-  vim.keymap.set("n", "<Leader>rt", ":!bun test<CR>", bufopts)
-
   -- Auto-format on save
-  -- Instead of checking for ts_ls specifically:
-  if client.server_capabilities.documentFormattingProvider then
+  if client:supports_method "textDocument/formatting" then
     vim.api.nvim_create_autocmd("BufWritePre", {
       buffer = bufnr,
       callback = function()
@@ -127,14 +120,12 @@ for _, lsp in ipairs(servers) do
 end
 
 -- Configure diagnostic display
--- Configure diagnostic display
 vim.diagnostic.config {
   virtual_text = {
     prefix = "●",
     spacing = 4,
-    source = false, -- Don't show source in virtual text
+    source = false,
     format = function(diagnostic)
-      -- Limit the diagnostic message length
       local message = diagnostic.message
       if #message > 50 then
         return string.sub(message, 1, 45) .. "..."
@@ -146,22 +137,21 @@ vim.diagnostic.config {
     focusable = true,
     style = "minimal",
     border = "rounded",
-    source = true, -- Show source in float window instead
+    source = true,
     header = "",
     prefix = "",
-    -- Format floating window width
-    width = 60, -- Set maximum width
-    max_width = 60, -- Ensure it doesn't exceed this width
+    width = 60,
+    max_width = 60,
   },
-  signs = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+    },
+  },
   underline = true,
   update_in_insert = false,
   severity_sort = true,
 }
-
--- Set up diagnostic signs with the same icons
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
