@@ -42,10 +42,10 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
   vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-  
+
   -- Add implementation keybinding
   vim.keymap.set("n", "gI", vim.lsp.buf.implementation, bufopts)
-  
+
   -- Add references keybinding (replacing gr)
   vim.keymap.set("n", "gR", vim.lsp.buf.references, bufopts)
 
@@ -113,7 +113,7 @@ for _, lsp in ipairs(servers) do
         format = {
           enabled = true,
           settings = {
-            url = vim.fn.stdpath("config") .. "/lang-servers/intellij-java-google-style.xml",
+            url = vim.fn.stdpath "config" .. "/lang-servers/intellij-java-google-style.xml",
             profile = "GoogleStyle",
           },
         },
@@ -151,16 +151,8 @@ for _, lsp in ipairs(servers) do
           updateBuildConfiguration = "interactive",
           runtimes = {
             {
-              name = "JavaSE-17",
-              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@17",
-            },
-            {
-              name = "JavaSE-11",
-              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@11",
-            },
-            {
-              name = "JavaSE-1.8",
-              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@8",
+              name = "JavaSE-23",
+              path = "/home/linuxbrew/.linuxbrew/opt/openjdk@23",
             },
           },
         },
